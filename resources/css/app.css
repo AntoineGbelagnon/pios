@@ -1,0 +1,60 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+	--pios-ink: #17212b;
+	--pios-teal: #0f766e;
+	--pios-surface: #f4f7f6;
+	--pios-line: #dce5e2;
+}
+
+body {
+	min-height: 100vh;
+	color: var(--pios-ink);
+	background: var(--pios-surface);
+}
+
+.pios-brand {
+	color: var(--pios-teal);
+	letter-spacing: .08em;
+	font-weight: 800;
+}
+
+.pios-sidebar {
+	min-height: 100vh;
+	background: #fff;
+	border-right: 1px solid var(--pios-line);
+}
+
+.pios-sidebar .nav-link {
+	color: #52615f;
+	border-radius: .5rem;
+}
+
+.pios-sidebar .nav-link:hover,
+.pios-sidebar .nav-link:focus {
+	color: var(--pios-teal);
+	background: #e7f4f1;
+}
+
+.pios-auth-shell {
+	min-height: 100vh;
+	background: linear-gradient(135deg, #e8f5f1 0%, #f8faf9 55%, #fff 100%);
+}
+
+.pios-panel {
+	border: 1px solid var(--pios-line);
+	border-radius: 1rem;
+	box-shadow: 0 .75rem 2rem rgba(23, 33, 43, .08);
+}
+
+.pios-chart {
+	position: relative;
+	height: 280px;
+}
+
+.btn-primary {
+	--bs-btn-bg: var(--pios-teal);
+	--bs-btn-border-color: var(--pios-teal);
+	--bs-btn-hover-bg: #0b5f59;
+	--bs-btn-hover-border-color: #0b5f59;
+}
