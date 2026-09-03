@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide d'utilisation PIOS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #1538a6;
+            --primary-dark: #0d287f;
+            --primary-soft: #eef2ff;
+            --purple: #7837ee;
+            --green: #25c46a;
+            --pink: #f3437a;
+            --orange: #ffad1f;
+            --ink: #171b2e;
+            --muted: #6b7280;
+            --line: #e5e7eb;
+            --surface: #f9fafb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--ink);
+            line-height: 1.7;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .cover {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1d1a52 0%, #1538a6 45%, #7837ee 100%);
+            color: #fff;
+            padding: 60px 40px;
+            page-break-after: always;
+        }
+
+        .cover-logo {
+            display: grid;
+            width: 80px;
+            height: 80px;
+            color: #fff;
+            place-items: center;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #f6d365, #ff9f43);
+            font-size: 2rem;
+            font-weight: 800;
+            box-shadow: 0 16px 40px rgba(0,0,0,.25);
+            margin-bottom: 32px;
+        }
+
+        .cover h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -.06em;
+            margin-bottom: 12px;
+        }
+
+        .cover .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,.75);
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        .cover .version {
+            margin-top: 48px;
+            padding: 8px 20px;
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 999px;
+            font-size: .85rem;
+            color: rgba(255,255,255,.7);
+        }
+
+        .toc {
+            padding: 60px 50px;
+            page-break-after: always;
+        }
+
+        .toc h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 24px;
+            letter-spacing: -.03em;
+        }
+
+        .toc-list {
+            list-style: none;
+            counter-reset: toc;
+        }
+
+        .toc-list li {
+            counter-increment: toc;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: .95rem;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .toc-list li::before {
+            content: counter(toc, decimal-leading-zero);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: .85rem;
+            min-width: 28px;
+        }
+
+        .toc-list li a {
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toc-list li a:hover {
+            color: var(--primary);
+        }
+
+        .toc-list li span {
+            color: var(--muted);
+            font-size: .82rem;
+            margin-left: auto;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 50px;
+        }
+
+        .chapter {
+            page-break-before: always;
+            padding-top: 20px;
+        }
+
+        .chapter:first-of-type {
+            page-break-before: avoid;
+        }
+
+        .chapter-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #fff;
+            font-size: .85rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        h2.chapter-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--ink);
+            letter-spacing: -.03em;
+            margin-bottom: 8px;
+        }
+
+        .chapter-desc {
+            color: var(--muted);
+            font-size: .92rem;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin: 28px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--primary-soft);
+        }
+
+        h4 {
+            font-size: .95rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 20px 0 8px;
+        }
+
+        p {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        ul, ol {
+            margin: 0 0 16px 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-size: .88rem;
+            line-height: 1.6;
+        }
+
+        .info-box.tip {
+            background: #ecfdf5;
+            border-left: 4px solid var(--green);
+            color: #065f46;
+        }
+
+        .info-box.warning {
+            background: #fff7ed;
+            border-left: 4px solid var(--orange);
+            color: #92400e;
+        }
+
+        .info-box.important {
+            background: #fef2f2;
+            border-left: 4px solid var(--pink);
+            color: #991b1b;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .step-list {
+            counter-reset: steps;
+            list-style: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: steps;
+            position: relative;
+            padding: 10px 0 10px 48px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .step-list li::before {
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 10px;
+            display: grid;
+            width: 32px;
+            height: 32px;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: .82rem;
+        }
+
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: .85rem;
+        }
+
+        .field-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .field-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+        }
+
+        .field-table td:first-child {
+            font-weight: 600;
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: .72rem;
+            font-weight: 700;
+        }
+
+        .badge-blue { background: var(--primary-soft); color: var(--primary); }
+        .badge-green { background: #ecfdf5; color: #065f46; }
+        .badge-purple { background: #f3e8ff; color: #6b21a8; }
+        .badge-red { background: #fef2f2; color: #991b1b; }
+        .badge-orange { background: #fff7ed; color: #92400e; }
+
+        .role-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: .8rem;
+        }
+
+        .role-matrix th, .role-matrix td {
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            text-align: center;
+        }
+
+        .role-matrix th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: .72rem;
+        }
+
+        .role-matrix td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .check { color: var(--green); font-weight: 800; }
+        .cross { color: #d1d5db; }
+
+        .shortcut {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+            font-size: .8rem;
+            border-top: 1px solid var(--line);
+            margin-top: 40px;
+        }
+
+        @media print {
+            body { font-size: 12px; }
+            .cover { min-height: auto; height: 100vh; }
+            .chapter { page-break-before: always; }
+            .content { padding: 30px 40px; }
+            .no-break { page-break-inside: avoid; }
+        }
+
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================== PAGE DE COUVERTURE ============================== -->
+<div class="cover">
+    <div class="cover-logo">P</div>
+    <h1>Guide d'utilisation</h1>
+    <p class="subtitle">
+        Plateforme de gestion de boutique — ventes, stocks, achats, clients, caisse, statistiques et administration.
+    </p>
+    <div class="version">Version 1.0 — Septembre 2026</div>
+</div>
+
+<!-- ============================== TABLE DES MATIÈRES ============================== -->
+<div class="toc">
+    <h2>Table des matières</h2>
+    <ol class="toc-list">
+        <li><a href="#ch1">Connexion et authentification</a> <span>2FA, sécurité</span></li>
+        <li><a href="#ch2">Tableau de bord</a> <span>Vue d'ensemble, métriques</span></li>
+        <li><a href="#ch3">Produits, catégories et marques</a> <span>Catalogue, SKU, prix</span></li>
+        <li><a href="#ch4">Gestion des stocks</a> <span>Mouvements, inventaire, entrepôts</span></li>
+        <li><a href="#ch5">Ventes et Point de vente (POS)</a> <span>Panier, paiement, reçus</span></li>
+        <li><a href="#ch6">Approvisionnements</a> <span>Commandes fournisseurs, réception</span></li>
+        <li><a href="#ch7">Clients</a> <span>Fiches, crédit, fidélité</span></li>
+        <li><a href="#ch8">Fournisseurs</a> <span>Fiches, dettes, conditions</span></li>
+        <li><a href="#ch9">Caisse</a> <span>Ouverture, clôture, mouvements</span></li>
+        <li><a href="#ch10">Dépenses</a> <span>Saisie, catégories, justificatifs</span></li>
+        <li><a href="#ch11">Retours et remboursements</a> <span>Retour client, remise en stock</span></li>
+        <li><a href="#ch12">Garantie et SAV</a> <span>Enregistrement, suivi, résolution</span></li>
+        <li><a href="#ch13">Statistiques et rapports</a> <span>Graphiques, export CSV</span></li>
+        <li><a href="#ch14">Utilisateurs et permissions</a> <span>Roles, 2FA, activation</span></li>
+        <li><a href="#ch15">Paramètres</a> <span>Entreprise, boutique, configuration</span></li>
+        <li><a href="#ch16">Notifications</a> <span>Alertes, centre de notifications</span></li>
+        <li><a href="#ch17">Journal d'activité</a> <span>Audit log, traçabilité</span></li>
+    </ol>
+</div>
+
+<!-- ============================== CONTENU ============================== -->
+<div class="content">
+
+<!-- CHAPITRE 1 : CONNEXION -->
+<div class="chapter" id="ch1">
+    <div class="chapter-number">01</div>
+    <h2 class="chapter-title">Connexion et authentification</h2>
+    <p class="chapter-desc">PIOS utilise une authentification à deux facteurs (2FA) par code envoyé par email pour sécuriser l'accès au tableau de bord.</p>
+
+    <h3>Connexion</h3>
+    <ol class="step-list">
+        <li>Ouvrez votre navigateur et accédez à l'adresse de PIOS (ex: <code>http://localhost:8000</code>).</li>
+        <li>Renseignez votre <strong>adresse email</strong> et votre <strong>mot de passe</strong>.</li>
+        <li>Cochez <strong>« Se souvenir de moi »</strong> si vous souhaitez rester connecté.</li>
+        <li>Cliquez sur <strong>« Se connecter »</strong>.</li>
+    </ol>
+
+    <h3>Authentification à deux facteurs (2FA)</h3>
+    <p>Après avoir saisi vos identifiants, un <strong>code à 6 chiffres</strong> est envoyé à l'adresse email configurée.</p>
+    <ol class="step-list">
+        <li>Vérifiez votre boîte de réception email.</li>
+        <li>Saisissez le code reçu dans le formulaire de vérification.</li>
+        <li>Vous disposez de <strong>10 minutes</strong> pour valider le code avant son expiration.</li>
+        <li>En cas de problème, cliquez sur <strong>« Renvoyer le code »</strong> (délai de 60 secondes entre deux envois).</li>
+    </ol>
+
+    <div class="info-box tip">
+        <strong>💡 Conseil</strong>
+        Vérifiez également votre dossier spam/courriers indésirables si vous ne recevez pas le code.
+    </div>
+
+    <h3>Se déconnecter</h3>
+    <p>Cliquez sur votre avatar en bas de la barre latérale, puis sur <strong>« Se déconnecter »</strong>. Votre session sera automatiquement invalidée.</p>
+</div>
+
+<!-- CHAPITRE 2 : TABLEAU DE BORD -->
+<div class="chapter" id="ch2">
+    <div class="chapter-number">02</div>
+    <h2 class="chapter-title">Tableau de bord</h2>
+    <p class="chapter-desc">Le tableau de bord offre une vue d'ensemble de l'activité de votre boutique avec les métriques clés et les dernières transactions.</p>
+
+    <h3>Métriques principales</h3>
+    <div class="no-break">
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>Métrique</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>💰 Chiffre d'affaires</td><td>Total des ventes sur la période sélectionnée</td></tr>
+                <tr><td>📊 Nombre de ventes</td><td>Transactions réalisées</td></tr>
+                <tr><td>🛒 Panier moyen</td><td>Montant moyen par transaction</td></tr>
+                <tr><td>💸 Dépenses</td><td>Total des dépenses enregistrées</td></tr>
+                <tr><td>📈 Marge estimée</td><td>Différence entre ventes et coût d'achat</td></tr>
+                <tr><td>📦 Stock total</td><td>Nombre total d'articles en stock</td></tr>
+                <tr><td>👥 Clients</td><td>Nombre total de clients enregistrés</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Sectionss du dashboard</h3>
+    <ul>
+        <li><strong>Top produits</strong> — Les articles les plus vendus</li>
+        <li><strong>Top catégories</strong> — Les catégories les plus performantes</li>
+        <li><strong>Top clients</strong> — Les meilleurs clients par volume d'achat</li>
+        <li><strong>Dernières ventes</strong> — Les transactions les plus récentes</li>
+        <li><strong>Alertes stock</strong> — Produits en rupture ou en stock faible</li>
+    </ul>
+
+    <div class="info-box tip">
+        <strong>💡 Conseil</strong>
+        Utilisez la barre de recherche en haut pour trouver rapidement n'importe quel élément dans PIOS.
+    </div>
+</div>
+
+<!-- CHAPITRE 3 : PRODUITS -->
+<div class="chapter" id="ch3">
+    <div class="chapter-number">03</div>
+    <h2 class="chapter-title">Produits, catégories et marques</h2>
+    <p class="chapter-desc">Gérez votre catalogue de produits, organisez-les par catégories et par marques.</p>
+
+    <h3>Gestion des catégories</h3>
+    <p>Les catégories permettent d'organiser vos produits par famille (ex: « Électronique », « Vêtements »).</p>
+    <ul>
+        <li><strong>Ajouter :</strong> Menu <em>Catalogue & stock → Catégories</em> → bouton « Nouveau »</li>
+        <li><strong>Modifier :</strong> Cliquez sur le nom d'une catégorie existante</li>
+        <li><strong>Supprimer :</strong> Utilisez le bouton d'action dans la liste</li>
+    </ul>
+
+    <h3>Gestion des marques</h3>
+    <p>Enregistrez les marques de vos produits pour faciliter le filtrage et les statistiques.</p>
+    <ul>
+        <li><strong>Ajouter :</strong> Menu <em>Catalogue & stock → Marques</em> → bouton « Nouveau »</li>
+        <li><strong>Modifier / Supprimer :</strong> Depuis la liste des marques</li>
+    </ul>
+
+    <h3>Ajout d'un produit</h3>
+    <p>Menu <em>Catalogue & stock → Produits</em> → bouton « Nouveau produit »</p>
+
+    <div class="no-break">
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>Champ</th>
+                    <th>Obligatoire</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Nom</td><td><span class="badge badge-red">Oui</span></td><td>Nom commercial du produit</td></tr>
+                <tr><td>SKU</td><td><span class="badge badge-blue">Auto</span></td><td>Référence unique (généré automatiquement)</td></tr>
+                <tr><td>Code-barres</td><td><span class="badge badge-orange">Non</span></td><td>Code-barres EAN/UPC pour le scan</td></tr>
+                <tr><td>Catégorie</td><td><span class="badge badge-red">Oui</span></td><td>Appartenance à une catégorie</td></tr>
+                <tr><td>Marque</td><td><span class="badge badge-orange">Non</span></td><td>Marque du produit</td></tr>
+                <tr><td>Prix de vente</td><td><span class="badge badge-red">Oui</span></td><td>Prix TTC en FCFA</td></tr>
+                <tr><td>Prix promotionnel</td><td><span class="badge badge-orange">Non</span></td><td>Prix réduit en cas de promotion</td></tr>
+                <tr><td>Coût d'achat</td><td><span class="badge badge-red">Oui</span></td><td>Prix d'achat pour calcul de marge</td></tr>
+                <tr><td>Stock initial</td><td><span class="badge badge-red">Oui</span></td><td>Quantité en stock</td></tr>
+                <tr><td>Seuil d'alerte</td><td><span class="badge badge-orange">Non</span></td><td>Seuil minimum avant alerte stock faible</td></tr>
+                <tr><td>Unité</td><td><span class="badge badge-orange">Non</span></td><td>pièce, kg, litre, etc.</td></tr>
+                <tr><td>Durée de garantie</td><td><span class="badge badge-orange">Non</span></td><td>En jours</td></tr>
+                <tr><td>Sérialisé</td><td><span class="badge badge-orange">Non</span></td><td>Indique si le produit a un numéro de série</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="info-box warning">
+        <strong>⚠️ Important</strong>
+        Le prix de vente est contrôlé depuis le serveur. Ne vous fiez pas uniquement aux valeurs affichées dans le navigateur lors de la vente.
+    </div>
+</div>
+
+<!-- CHAPITRE 4 : STOCK -->
+<div class="chapter" id="ch4">
+    <div class="chapter-number">04</div>
+    <h2 class="chapter-title">Gestion des stocks</h2>
+    <p class="chapter-desc">Suivez les niveaux de stock, enregistrez les mouvements, effectuez des ajustements et gérez les inventaires.</p>
+
+    <h3>Consultation du stock</h3>
+    <p>Menu <em>Catalogue & stock → Stock & inventaire</em> affiche l'état actuel de tous les produits avec leurs quantités disponibles.</p>
+
+    <h3>Mouvements de stock</h3>
+    <p>Enregistrez les entrées et sorties manuelles de stock (hors ventes et achats).</p>
+    <ol class="step-list">
+        <li>Allez dans <em>Stock & inventaire → Mouvements</em>.</li>
+        <li>Cliquez sur <strong>« Nouveau mouvement »</strong>.</li>
+        <li>Sélectionnez le produit, le type (entrée/sortie), la quantité et le motif.</li>
+        <li>Validez pour mettre à jour le stock.</li>
+    </ol>
+
+    <h3>Ajustements de stock</h3>
+    <p>Utilisez les ajustements pour corriger les écarts constatés lors de comptages physiques.</p>
+    <ul>
+        <li>Menu <em>Stock & inventaire → Ajustement</em></li>
+        <li>Indiquez le produit, la quantité réelle et la raison de l'ajustement</li>
+    </ul>
+
+    <h3>Inventaire</h3>
+    <p>Lancez un inventaire complet pour vérifier et valider les stocks de l'ensemble de vos produits.</p>
+
+    <h3>Alertes de stock faible</h3>
+    <p>Menu <em>Stock & inventaire → Stock faible</em> affiche tous les produits dont le stock est inférieur au seuil d'alerte défini.</p>
+
+    <h3>Entrepôts</h3>
+    <p>Configurez plusieurs entrepôts pour gérer les stocks dans différents lieux de stockage.</p>
+    <ul>
+        <li><strong>Ajouter :</strong> Menu <em>Administration → Boutiques</em></li>
+        <li>Chaque entrepôt peut avoir un stock distinct pour les mêmes produits</li>
+    </ul>
+
+    <div class="info-box important">
+        <strong>🚨 Attention</strong>
+        Chaque vente, annulation, réception d'achat ou retour génère automatiquement un mouvement de stock. Vérifiez régulièrement l'historique des mouvements.
+    </div>
+</div>
+
+<!-- CHAPITRE 5 : VENTES / POS -->
+<div class="chapter" id="ch5">
+    <div class="chapter-number">05</div>
+    <h2 class="chapter-title">Ventes et Point de vente (POS)</h2>
+    <p class="chapter-desc">Réalisez vos ventes rapidement depuis l'interface de point de vente, gérez le panier et les modes de paiement.</p>
+
+    <h3>Ouvrir une session de vente</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Ventes → Nouvelle vente</em>.</li>
+        <li>La page POS s'ouvre avec la zone de recherche de produits en haut.</li>
+    </ol>
+
+    <h3>Ajouter des produits au panier</h3>
+    <ul>
+        <li><strong>Recherche :</strong> Tapez le nom, SKU ou scannez le code-barres dans la barre de recherche.</li>
+        <li><strong>Sélection :</strong> Cliquez sur un produit pour l'ajouter au panier.</li>
+        <li><strong>Quantité :</strong> Modifiez la quantité directement dans le panier.</li>
+        <li><strong>Suppression :</strong> Cliquez sur l'icône de suppression à côté de l'article.</li>
+    </ul>
+
+    <h3>Remise</h3>
+    <p>Appliquez une remise sur le panier entier ou sur un article spécifique avant la validation.</p>
+
+    <h3>Modes de paiement</h3>
+    <div class="no-break">
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>Mode</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>💵 Espèces</td><td>Paiement en cash, le montant reçu est saisi manuellement</td></tr>
+                <tr><td>💳 Carte</td><td>Paiement par carte bancaire</td></tr>
+                <tr><td>📱 Mobile Money</td><td>Paiement via MTN MoMo, Orange Money, Wave, etc.</td></tr>
+                <tr><td>📝 Crédit</td><td>Vente à crédit — le client paiera ultérieurement</td></tr>
+                <tr><td>🔀 Mixte</td><td>Combinaison de plusieurs modes de paiement</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Valider la vente</h3>
+    <ol class="step-list">
+        <li>Vérifiez le récapitulatif du panier (articles, quantités, sous-total).</li>
+        <li>Sélectionnez le <strong>mode de paiement</strong>.</li>
+        <li>Cliquez sur <strong>« Valider la vente »</strong>.</li>
+        <li>Le reçu s'affiche — imprimez-le ou enregistrez-le.</li>
+    </ol>
+
+    <h3>Historique des ventes</h3>
+    <p>Menu <em>Ventes → Historique ventes</em> permet de consulter toutes les ventes passées, de les filtrer par date, client ou mode de paiement.</p>
+
+    <h3>Annulation d'une vente</h3>
+    <p>Depuis la fiche d'une vente, cliquez sur <strong>« Annuler »</strong>. Un mouvement de stock inverse sera automatiquement créé.</p>
+
+    <h3>Reçu</h3>
+    <p>Le reçu imprimable contient : les informations de la boutique, la liste des articles, les montants, le mode de paiement et la date. Vous pouvez le réimprimer depuis l'historique.</p>
+
+    <div class="info-box tip">
+        <strong>💡 Raccourci</strong>
+        Utilisez <span class="shortcut">Ctrl</span> + <span class="shortcut">F</span> pourFocus rapide sur la barre de recherche de produits dans le POS.
+    </div>
+</div>
+
+<!-- CHAPITRE 6 : APPROVISIONNEMENTS -->
+<div class="chapter" id="ch6">
+    <div class="chapter-number">06</div>
+    <h2 class="chapter-title">Approvisionnements</h2>
+    <p class="chapter-desc">Gérez les commandes auprès de vos fournisseurs, suivez les réceptions et calculez les dettes fournisseurs.</p>
+
+    <h3>Créer un approvisionnement</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Approvisionnements</em> → bouton « Nouvel approvisionnement ».</li>
+        <li>Sélectionnez le <strong>fournisseur</strong>.</li>
+        <li>Ajoutez les <strong>produits</strong> avec les quantités et prix d'achat.</li>
+        <li>Validez pour enregistrer la commande.</li>
+    </ol>
+
+    <h3>Réceptionner une commande</h3>
+    <p>Vous pouvez réceptionner une commande <strong>totalement</strong> ou <strong>partiellement</strong> :</p>
+    <ul>
+        <li><strong>Réception totale :</strong> Toutes les quantités commandées sont reçues</li>
+        <li><strong>Réception partielle :</strong> Indiquez les quantités réellement reçues par article</li>
+    </ul>
+
+    <div class="info-box warning">
+        <strong>⚠️ Important</strong>
+        La réception met à jour automatiquement le stock et la dette fournisseur. Vérifiez les quantités avant de valider.
+    </div>
+
+    <h3>Suivi des dettes fournisseurs</h3>
+    <p>Le montant total dû à chaque fournisseur est calculé automatiquement à partir des achats non payés. Consultez-le dans la fiche du fournisseur.</p>
+</div>
+
+<!-- CHAPITRE 7 : CLIENTS -->
+<div class="chapter" id="ch7">
+    <div class="chapter-number">07</div>
+    <h2 class="chapter-title">Clients</h2>
+    <p class="chapter-desc">Gérez la base de données clients, suivez les achats, les crédits et la fidélité.</p>
+
+    <h3>Ajouter un client</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Gestion → Clients</em> → bouton « Nouveau client ».</li>
+        <li>Renseignez les informations : nom, téléphone, email, adresse.</li>
+        <li>Optionnel : cochez <strong>« Professionnel »</strong> pour un client entreprise.</li>
+        <li>Définissez un <strong>plafond de crédit</strong> si le client peut acheter à crédit.</li>
+    </ol>
+
+    <h3>Fiche client</h3>
+    <p>La fiche client affiche :</p>
+    <ul>
+        <li>Informations personnelles et coordonnées</li>
+        <li>Total des dépenses cumulées</li>
+        <li>Solde de crédit (montant dû)</li>
+        <li>Statut d'activation (activé/désactivé)</li>
+    </ul>
+
+    <h3>Activer / Désactiver</h3>
+    <p>Vous pouvez désactiver un client pour l'empêcher d'apparaître dans les listes de vente sans supprimer son historique.</p>
+</div>
+
+<!-- CHAPITRE 8 : FOURNISSEURS -->
+<div class="chapter" id="ch8">
+    <div class="chapter-number">08</div>
+    <h2 class="chapter-title">Fournisseurs</h2>
+    <p class="chapter-desc">Enregistrez vos fournisseurs, suivez les achats et les dettes associées.</p>
+
+    <h3>Ajouter un fournisseur</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Gestion → Fournisseurs</em> → bouton « Nouveau fournisseur ».</li>
+        <li>Renseignez : nom, contact, téléphone, email, adresse.</li>
+        <li>Définissez les <strong>conditions de paiement</strong> (ex: 30 jours).</li>
+    </ol>
+
+    <h3>Suivi des achats et dettes</h3>
+    <p>La fiche fournisseur affiche :</p>
+    <ul>
+        <li>Nombre total d'achats effectués</li>
+        <li>Montant total de la dette</li>
+        <li>Informations de contact et agence</li>
+    </ul>
+
+    <h3>Activer / Désactiver</h3>
+    <p>Désactivez un fournisseur pour l'empêcher d'être sélectionné lors des nouveaux approvisionnements.</p>
+</div>
+
+<!-- CHAPITRE 9 : CAISSE -->
+<div class="chapter" id="ch9">
+    <div class="chapter-number">09</div>
+    <h2 class="chapter-title">Caisse</h2>
+    <p class="chapter-desc">Gérez les sessions de caisse : ouverture, suivi des opérations et clôture avec rapprochement.</p>
+
+    <h3>Ouvrir une session de caisse</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Gestion → Caisse</em> → bouton « Nouvelle session ».</li>
+        <li>Saisissez le <strong>fonds de caisse</strong> (montant de départ en espèces).</li>
+        <li>Validez pour ouvrir la session.</li>
+    </ol>
+
+    <h3>Suivi pendant la session</h3>
+    <p>Pendant une session ouverte, les ventes en espèces, les dépenses et les paiements sont automatiquement enregistrés.</p>
+
+    <h3>Clôturer la session</h3>
+    <ol class="step-list">
+        <li>Allez dans la session active et cliquez sur <strong>« Clôturer »</strong>.</li>
+        <li>Saisissez le <strong>montant réel</strong> compté dans la caisse.</li>
+        <li>Le système calcule automatiquement : <strong>Montant attendu</strong> = fonds + ventes - dépenses.</li>
+        <li>L'<strong>écart</strong> (réel - attendu) est affiché pour contrôle.</li>
+    </ol>
+
+    <div class="info-box tip">
+        <strong>💡 Conseil</strong>
+        Une session de caisse doit être ouverte avant de pouvoir enregistrer des ventes en espèces. Vérifiez l'état de la caisse au début de chaque journée.
+    </div>
+</div>
+
+<!-- CHAPITRE 10 : DÉPENSES -->
+<div class="chapter" id="ch10">
+    <div class="chapter-number">10</div>
+    <h2 class="chapter-title">Dépenses</h2>
+    <p class="chapter-desc">Enregistrez les dépenses courantes de la boutique (loyer, electricité, fournitures, etc.).</p>
+
+    <h3>Ajouter une dépense</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Gestion → Dépenses</em> → bouton « Nouvelle dépense ».</li>
+        <li>Saisissez le <strong>montant</strong> et la <strong>date</strong>.</li>
+        <li>Sélectionnez la <strong>catégorie</strong> (Loyer, Électricité, Fournitures, Transport, Autre...).</li>
+        <li>Ajoutez une <strong>description</strong> et un <strong>justificatif</strong> (photo de la facture) si disponible.</li>
+        <li>Validez pour enregistrer.</li>
+    </ol>
+
+    <h3>Consulter les dépenses</h3>
+    <p>La liste des dépenses affiche toutes les opérations avec leur montant, catégorie et date. Vous pouvez les filtrer par période.</p>
+
+    <h3>Supprimer une dépense</h3>
+    <p>Utilisez le bouton de suppression dans la liste pour annuler une dépense enregistrée par erreur.</p>
+</div>
+
+<!-- CHAPITRE 11 : RETOURS -->
+<div class="chapter" id="ch11">
+    <div class="chapter-number">11</div>
+    <h2 class="chapter-title">Retours et remboursements</h2>
+    <p class="chapter-desc">Gérez les retours clients : retour total ou partiel d'une vente avec remboursement et remise en stock.</p>
+
+    <h3>Enregistrer un retour</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Gestion → Retours</em> → bouton « Nouveau retour ».</li>
+        <li>Sélectionnez la <strong>vente d'origine</strong>.</li>
+        <li>Indiquez les <strong>produits retournés</strong> et les quantités.</li>
+        <li>Saisissez le <strong>motif du retour</strong> (défaut, erreur, insatisfaction...).</li>
+        <li>Cochez <strong>« Remise en stock »</strong> si les produits sont remis en vente.</li>
+        <li>Validez pour enregistrer le retour.</li>
+    </ol>
+
+    <h3>Impact automatique</h3>
+    <ul>
+        <li>✅ Le stock des produits retournés est automatiquement mis à jour</li>
+        <li>✅ Un mouvement de stock inverse est créé</li>
+        <li>✅ Le montant du remboursement est calculé</li>
+    </ul>
+
+    <div class="info-box warning">
+        <strong>⚠️ Attention</strong>
+        La quantité retournée ne peut pas dépasser la quantité initialement vendue. Un même article ne peut pas être retourné plusieurs fois au-delà de la quantité d'origine.
+    </div>
+</div>
+
+<!-- CHAPITRE 12 : GARANTIE / SAV -->
+<div class="chapter" id="ch12">
+    <div class="chapter-number">12</div>
+    <h2 class="chapter-title">Garantie et SAV</h2>
+    <p class="chapter-desc">Gérez les demandes de SAV : enregistrez les produits sous garantie, suivez les interventions et les résolutions.</p>
+
+    <h3>Enregistrer un dossier SAV</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Gestion → Garantie / SAV</em> → bouton « Nouveau dossier ».</li>
+        <li>Sélectionnez le <strong>client</strong> et le <strong>produit</strong>.</li>
+        <li>Renseignez le <strong>numéro de série</strong> si applicable.</li>
+        <li>Décrivez le <strong>problème signalé</strong>.</li>
+        <li>Définissez les <strong>dates</strong> : date d'achat et date de fin de garantie.</li>
+        <li>Validez pour créer le dossier.</li>
+    </ol>
+
+    <h3>Suivi du dossier</h3>
+    <p>Chaque dossier SAV passe par différents statuts :</p>
+    <div class="no-break">
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>Statut</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="badge badge-blue">Ouvert</span></td><td>Dossier créé, en attente de diagnostic</td></tr>
+                <tr><td><span class="badge badge-orange">En cours</span></td><td>Intervention en cours</td></tr>
+                <tr><td><span class="badge badge-green">Résolu</span></td><td>Problème corrigé, produit restitué</td></tr>
+                <tr><td><span class="badge badge-red">Fermé</span></td><td>Dossier clos</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Clôturer un dossier</h3>
+    <p>Mettez à jour le statut, indiquez la <strong>résolution</strong> apportée et le <strong>coût</strong> de l'intervention le cas échéant.</p>
+</div>
+
+<!-- CHAPITRE 13 : STATISTIQUES -->
+<div class="chapter" id="ch13">
+    <div class="chapter-number">13</div>
+    <h2 class="chapter-title">Statistiques et rapports</h2>
+    <p class="chapter-desc">Analysez les performances de votre boutique avec des graphiques et des tableaux détaillés.</p>
+
+    <h3>Accès</h3>
+    <p>Menu <em>Administration → Statistiques</em> (réservé aux administrateurs).</p>
+
+    <h3>Métriques disponibles</h3>
+    <div class="no-break">
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>Rapport</th>
+                    <th>Données affichées</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Chiffre d'affaires</td><td>CA total, évolution, tendance</td></tr>
+                <tr><td>Coût d'achat</td><td>Coût approximatif des ventes (basé sur les achats de la période)</td></tr>
+                <tr><td>Dépenses</td><td>Total des dépenses par catégorie</td></tr>
+                <tr><td>Marge brute</td><td>Différence CA - Coût - Dépenses</td></tr>
+                <tr><td>Top produits</td><td>Classement par nombre de ventes</td></tr>
+                <tr><td>Top catégories</td><td>Classement par performance</td></tr>
+                <tr><td>Top clients</td><td>Classement par volume d'achat</td></tr>
+                <tr><td>Top vendeurs</td><td>Classement par CA généré</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Export CSV</h3>
+    <p>Téléchargez les données en format CSV pour une analyse externe :</p>
+    <ul>
+        <li><strong>Export ventes</strong> — Détail de toutes les ventes de la période</li>
+        <li><strong>Export produits</strong> — Liste des produits avec leurs performances</li>
+        <li><strong>Export clients</strong> — Fiches clients avec historique d'achats</li>
+    </ul>
+</div>
+
+<!-- CHAPITRE 14 : UTILISATEURS -->
+<div class="chapter" id="ch14">
+    <div class="chapter-number">14</div>
+    <h2 class="chapter-title">Utilisateurs et permissions</h2>
+    <p class="chapter-desc">Gérez les comptes utilisateurs, les rôles et les droits d'accès aux différentes fonctionnalités.</p>
+
+    <h3>Roles disponibles</h3>
+    <div class="no-break">
+        <table class="role-matrix">
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Admin</th>
+                    <th>Propriétaire</th>
+                    <th>Manager</th>
+                    <th>Vendeur</th>
+                    <th>Caissier</th>
+                    <th>Magasinier</th>
+                    <th>Comptable</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Dashboard</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td></tr>
+                <tr><td>Produits</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="cross">—</td></tr>
+                <tr><td>Ventes / POS</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                <tr><td>Stock</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="cross">—</td></tr>
+                <tr><td>Caisse</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td></tr>
+                <tr><td>Clients</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                <tr><td>Statistiques</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+                <tr><td>Utilisateurs</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+                <tr><td>Paramètres</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Ajouter un utilisateur</h3>
+    <ol class="step-list">
+        <li>Allez dans <em>Administration → Utilisateurs</em> → bouton « Nouvel utilisateur ».</li>
+        <li>Renseignez le <strong>nom</strong>, <strong>email</strong> et <strong>rôle</strong>.</li>
+        <li>Le mot de passe initial est envoyé par email (2FA).</li>
+        <li>L'utilisateur est automatiquement <strong>actif</strong>.</li>
+    </ol>
+
+    <h3>Activer / Désactiver un utilisateur</h3>
+    <p>Désactivez un utilisateur pour lui retirer l'accès sans supprimer son compte. Il ne pourra plus se connecter.</p>
+
+    <h3>Sécurité</h3>
+    <ul>
+        <li><strong>Authentification 2FA :</strong> Chaque connexion nécessite un code par email</li>
+        <li><strong>Rate limiting :</strong> 5 tentatives max par minute, blocage temporaire ensuite</li>
+        <li><strong>Isolation entreprise :</strong> Chaque utilisateur ne voit que les données de sa société</li>
+    </ul>
+</div>
+
+<!-- CHAPITRE 15 : PARAMÈTRES -->
+<div class="chapter" id="ch15">
+    <div class="chapter-number">15</div>
+    <h2 class="chapter-title">Paramètres</h2>
+    <p class="chapter-desc">Configurez les informations de votre entreprise et les paramètres généraux de PIOS.</p>
+
+    <h3>Informations de l'entreprise</h3>
+    <p>Menu <em>Administration → Paramètres</em> permet de configurer :</p>
+    <ul>
+        <li><strong>Nom de l'entreprise</strong> — Affiché sur les reçus et documents</li>
+        <li><strong>Email</strong> — Adresse de contact</li>
+        <li><strong>Téléphone</strong> — Numéro de contact</li>
+        <li><strong>Adresse</strong> — Adresse physique</li>
+        <li><strong>Logo</strong> — Logo de l'entreprise pour les documents</li>
+    </ul>
+
+    <h3>Gestion des boutiques</h3>
+    <p>Menu <em>Administration → Boutiques</em> permet de créer et gérer vos points de vente :</p>
+    <ul>
+        <li>Ajouter une boutique avec son nom, adresse et responsable</li>
+        <li>Activer/désactiver une boutique</li>
+        <li>Associer des utilisateurs à des boutiques spécifiques</li>
+    </ul>
+
+    <h3>Paramètres opérationnels</h3>
+    <ul>
+        <li><strong>Devise</strong> — Devise utilisée (FCFA par défaut)</li>
+        <li><strong>Taxe</strong> — Taux de TVA applicable</li>
+        <li><strong>Formats de reçu</strong> — Paramètres d'affichage des reçus</li>
+        <li><strong>Modes de paiement</strong> — Activer/désactiver les modes acceptés</li>
+    </ul>
+</div>
+
+<!-- CHAPITRE 16 : NOTIFICATIONS -->
+<div class="chapter" id="ch16">
+    <div class="chapter-number">16</div>
+    <h2 class="chapter-title">Notifications</h2>
+    <p class="chapter-desc">Recevez et consultez les alertes importantes de la plateforme.</p>
+
+    <h3>Accès</h3>
+    <p>Cliquez sur l'icône <strong>♧</strong> dans la barre du haut pour accéder au centre de notifications.</p>
+
+    <h3>Types de notifications</h3>
+    <ul>
+        <li>📦 <strong>Stock faible</strong> — Alerte quand un produit atteint le seuil critique</li>
+        <li>👥 <strong>Nouveau client</strong> — Enregistrement d'un nouveau client</li>
+        <li>💰 <strong>Vente importante</strong> — Transaction dépassant un montant défini</li>
+        <li>🔧 <strong>SAV</strong> — Nouveau dossier de garantie</li>
+    </ul>
+
+    <h3>Gestion des notifications</h3>
+    <ul>
+        <li><strong>Marquer comme lu :</strong> Cliquez sur une notification pour la marquer comme lue</li>
+        <li><strong>Tout marquer comme lu :</strong> Bouton en haut de la page pour tout marquer d'un coup</li>
+    </ul>
+
+    <div class="info-box tip">
+        <strong>💡 Conseil</strong>
+        Un point orange sur l'icône de notification indique qu'il y a des notifications non lues.
+    </div>
+</div>
+
+<!-- CHAPITRE 17 : JOURNAL D'ACTIVITÉ -->
+<div class="chapter" id="ch17">
+    <div class="chapter-number">17</div>
+    <h2 class="chapter-title">Journal d'activité (Audit Log)</h2>
+    <p class="chapter-desc">Consultez l'historique complet des actions effectuées dans PIOS pour assurer la traçabilité.</p>
+
+    <h3>Accès</h3>
+    <p>Menu <em>Administration → Journal d'activité</em> (réservé aux administrateurs).</p>
+
+    <h3>Informations enregistrées</h3>
+    <p>Chaque entrée du journal contient :</p>
+    <ul>
+        <li><strong>Date et heure</strong> — Horodatage précis de l'action</li>
+        <li><strong>Utilisateur</strong> — Qui a effectué l'action</li>
+        <li><strong>Type d'action</strong> — Création, modification, suppression, connexion...</li>
+        <li><strong>Élément concerné</strong> — Le produit, client, vente, etc. modifié</li>
+        <li><strong>Détails</strong> — Les changements effectués (avant/après)</li>
+    </ul>
+
+    <div class="info-box important">
+        <strong>🔒 Sécurité</strong>
+        Le journal d'activité est un outil d'audit essentiel. Ne le modifiez jamais manuellement. Il permet de tracer les actions suspectes et de résoudre les litiges.
+    </div>
+</div>
+
+</div><!-- /content -->
+
+<footer>
+    <p><strong>PIOS</strong> — Plateforme de gestion de boutique</p>
+    <p>Guide d'utilisation v1.0 — Septembre 2026</p>
+    <p>Généré automatiquement 🤖</p>
+</footer>
+
+</body>
+</html>

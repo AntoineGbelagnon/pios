@@ -88,7 +88,8 @@ class StatisticController extends Controller
             ->get();
 
         // Ventes par vendeur
-        $salesByVendor = \App\Models\User::withSum(['sales' => fn($q) => $q->completed()->where('created_at', '>=', $startDate)], 'total as total_sales')
+        $salesByVendor = \App\Models\User::where('company_id', auth()->user()->company_id)
+            ->withSum(['sales' => fn($q) => $q->completed()->where('created_at', '>=', $startDate)], 'total as total_sales')
             ->withCount(['sales' => fn($q) => $q->completed()->where('created_at', '>=', $startDate)])
             ->has('sales')
             ->orderByDesc('total_sales')

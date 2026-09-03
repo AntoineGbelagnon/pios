@@ -17,8 +17,8 @@ class TwoFactorAuthenticationTest extends TestCase
         Notification::fake();
         config(['auth.two_factor.default_email' => 'celinbell195@gmail.com']);
 
-        $user = User::factory()->create([
-            'email' => 'celinbell195@gmail.com',
+        $user = User::withoutGlobalScopes()->where('email', 'celinbell195@gmail.com')->firstOrFail();
+        $user->update([
             'password' => bcrypt('password'),
             'is_active' => true,
         ]);
@@ -50,12 +50,16 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->assertNotNull($code);
         $this->get(route('two-factor.create'))
             ->assertOk()
-            ->assertSee('ce***********@gmail.com');
+            ->assertSee('ce**********@gmail.com');
 
         $this->post(route('two-factor.verify'), ['code' => $code])
             ->assertRedirect(route('dashboard'));
 
         $this->assertAuthenticatedAs($user);
+
+        // Force le rechargement depuis la session, comme sur la requete /dashboard du navigateur.
+        $this->app->make('auth')->forgetGuards();
+        $this->get(route('dashboard'))->assertOk();
     }
 
     public function test_an_invalid_code_does_not_authenticate_the_user(): void
@@ -89,5 +93,17 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $this->assertGuest();
         Notification::assertNothingSent();
+    }
+
+    public function test_authenticated_default_administrator_can_open_the_dashboard(): void
+    {
+        $user = User::withoutGlobalScopes()
+            ->where('email', 'celinbell195@gmail.com')
+            ->firstOrFail();
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertViewIs('admin.dashboard');
     }
 }

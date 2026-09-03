@@ -14,7 +14,12 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        return view('users.index', ['users' => User::with('company')->latest()->paginate(15)]);
+        return view('users.index', [
+            'users' => User::with('company')
+                ->where('company_id', auth()->user()->company_id)
+                ->latest()
+                ->paginate(15),
+        ]);
     }
 
     public function create(): View
