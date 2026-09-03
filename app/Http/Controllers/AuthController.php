@@ -18,9 +18,7 @@ class AuthController extends Controller
 
     public function create(): View
     {
-        return view('auth.login', [
-            'defaultEmail' => config('auth.two_factor.default_email'),
-        ]);
+        return view('auth.login');
     }
 
     public function store(Request $request): RedirectResponse
@@ -183,7 +181,7 @@ class AuthController extends Controller
     private function sendTwoFactorCode(Request $request, User $user, bool $remember): void
     {
         $code = (string) random_int(100000, 999999);
-        $recipient = (string) (config('auth.two_factor.default_email') ?: $user->email);
+        $recipient = (string) $user->email;
         $expiresMinutes = (int) config('auth.two_factor.expires_minutes', 10);
 
         Notification::route('mail', $recipient)

@@ -20,7 +20,7 @@
                         <div class="auth-field mb-3">
                             <label for="email" class="auth-field-label">Email Address</label>
                             <input class="form-control" type="email" id="email" name="email"
-                                value="{{ old('email', $defaultEmail) }}" placeholder="halworm@digital.com" required autofocus>
+                                value="{{ old('email') }}" placeholder="halworm@digital.com" required autofocus>
                         </div>
 
                         <div class="auth-field mb-3">

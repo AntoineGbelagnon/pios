@@ -15,7 +15,9 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_login_requires_a_valid_email_code_before_authentication(): void
     {
         Notification::fake();
-        config(['auth.two_factor.default_email' => 'celinbell195@gmail.com']);
+        // Une ancienne configuration globale ne doit jamais détourner le code
+        // destiné à l'utilisateur qui vient de saisir ses identifiants.
+        config(['auth.two_factor.default_email' => 'wrong-recipient@example.com']);
 
         $user = User::withoutGlobalScopes()->where('email', 'celinbell195@gmail.com')->firstOrFail();
         $user->update([
@@ -34,7 +36,7 @@ class TwoFactorAuthenticationTest extends TestCase
         $code = null;
         Notification::assertSentOnDemand(
             TwoFactorCodeNotification::class,
-            function (TwoFactorCodeNotification $notification, array $channels, object $notifiable) use (&$code): bool {
+            function (TwoFactorCodeNotification $notification, array $channels, object $notifiable) use (&$code, $user): bool {
                 $message = $notification->toMail($notifiable);
                 foreach ($message->introLines as $line) {
                     if (is_string($line) && preg_match('/^\d{6}$/', $line)) {
@@ -43,7 +45,7 @@ class TwoFactorAuthenticationTest extends TestCase
                 }
 
                 return in_array('mail', $channels, true)
-                    && ($notifiable->routes['mail'] ?? null) === 'celinbell195@gmail.com';
+                    && ($notifiable->routes['mail'] ?? null) === $user->email;
             }
         );
 

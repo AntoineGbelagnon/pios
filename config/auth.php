@@ -3,7 +3,6 @@
 return [
 
     'two_factor' => [
-        'default_email' => env('TWO_FACTOR_DEFAULT_EMAIL', 'celinbell195@gmail.com'),
         'expires_minutes' => (int) env('TWO_FACTOR_EXPIRES_MINUTES', 10),
         'max_attempts' => (int) env('TWO_FACTOR_MAX_ATTEMPTS', 5),
         'resend_after_seconds' => (int) env('TWO_FACTOR_RESEND_AFTER_SECONDS', 60),
